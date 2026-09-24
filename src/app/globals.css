@@ -1,26 +1,221 @@
 @import "tailwindcss";
 
+/* ── Variables ─────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f5f7;
+  --foreground: #172b4d;
+  --nav-h: 4rem;
+  --page: #f4f5f7;
+  --surface: #ffffff;
+  --card: #f4f5f7;
+  --ink: #172b4d;
+  --muted: #44546f;
+  --line: color-mix(in srgb, #091e42 8%, transparent);
+  --nav: color-mix(in srgb, #ffffff 90%, transparent);
+  --hover: color-mix(in srgb, #091e42 6%, transparent);
+  --note-bg: #e9f2ff;
+  --note-ink: #0747a6;
+  --ok-bg: #e3fcef;
+  --ok: #216e4e;
+  --warn-bg: #fff7ed;
+  --warn: #b65c02;
+  --warn-ink: #7a4100;
+  --warn-line: color-mix(in srgb, #b65c02 22%, transparent);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html.dark {
+  color-scheme: dark;
+  --background: #1d2125;
+  --foreground: #dee4ea;
+  --page: #1d2125;
+  --surface: #22272b;
+  --card: #2c333a;
+  --ink: #dee4ea;
+  --muted: #9fadbc;
+  --line: color-mix(in srgb, #ffffff 10%, transparent);
+  --nav: color-mix(in srgb, #1d2125 92%, transparent);
+  --hover: color-mix(in srgb, #ffffff 8%, transparent);
+  --note-bg: #1c2b41;
+  --note-ink: #85b8ff;
+  --ok-bg: #1c3329;
+  --ok: #4bce97;
+  --warn-bg: #2c2416;
+  --warn: #f5cd47;
+  --warn-ink: #f8e6a0;
+  --warn-line: color-mix(in srgb, #f5cd47 28%, transparent);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Base ───────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(110, 122, 145, 0.55) transparent;
+}
+
+html.dark {
+  scrollbar-color: rgba(198, 208, 224, 0.4) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(110, 122, 145, 0.45);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(110, 122, 145, 0.7);
+}
+
+html.dark *::-webkit-scrollbar-thumb {
+  background-color: rgba(198, 208, 224, 0.35);
+}
+
+html.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(198, 208, 224, 0.55);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), sans-serif;
+}
+
+button,
+a,
+[role="button"],
+[role="switch"] {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+/* ── Deck layout ────────────────────────────────────────────────── */
+.deck-section {
+  min-height: 100dvh;
+  padding-top: var(--nav-h);
+}
+
+.deck-inner {
+  min-height: calc(100dvh - var(--nav-h));
+}
+
+/* ── Presentation mode ──────────────────────────────────────────── */
+html.presenting {
+  overflow: hidden;
+}
+
+html.presenting .deck-section {
+  display: none;
+}
+
+html.presenting .deck-section[data-current="true"] {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  height: 100dvh;
+  min-height: 100dvh;
+  padding-top: 0;
+  overflow: auto;
+  animation: present-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html.presenting .deck-inner {
+  min-height: 100dvh;
+}
+
+/* ── Aurora blobs ───────────────────────────────────────────────── */
+.hero-aurora {
+  background: #041028;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(42px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.aurora-blob-1 {
+  top: -12%;
+  left: 18%;
+  width: 42vw;
+  height: 42vw;
+  background: #2684ff;
+  animation: aurora-blob-1 8s ease-in-out infinite;
+}
+
+.aurora-blob-2 {
+  top: 8%;
+  right: -6%;
+  width: 36vw;
+  height: 36vw;
+  background: #7ad7ff;
+  animation: aurora-blob-2 11s ease-in-out infinite;
+}
+
+.aurora-blob-3 {
+  bottom: -18%;
+  left: 32%;
+  width: 40vw;
+  height: 40vw;
+  background: #4c6fff;
+  animation: aurora-blob-3 9s ease-in-out infinite;
+}
+
+@keyframes aurora-blob-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(28vw, 18vh, 0) scale(1.25); }
+}
+
+@keyframes aurora-blob-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-32vw, 22vh, 0) scale(0.82); }
+}
+
+@keyframes aurora-blob-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-18vw, -28vh, 0) scale(1.3); }
+}
+
+/* ── Presentation entry animation ───────────────────────────────── */
+@keyframes present-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Reduced motion overrides ───────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .aurora-blob-1,
+  .aurora-blob-2,
+  .aurora-blob-3 {
+    animation: none;
+  }
+
+  html.presenting .deck-section[data-current="true"] {
+    animation: none;
+  }
 }

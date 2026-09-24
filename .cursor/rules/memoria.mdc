@@ -1,0 +1,33 @@
+---
+description: Contexto de la landing de presentación sobre Definition of Done
+alwaysApply: true
+---
+
+# Memoria del proyecto
+
+Landing de una sola página para exponer en 15 minutos «Definition of Done y documentación mínima». No es un artículo: frases cortas, lenguaje de equipo, se pueden leer en voz alta.
+
+## Decisiones ya tomadas
+
+- La portada no lleva nombre de presentador. Solo título y objetivo: ponernos de acuerdo en cuándo algo está de verdad terminado.
+- La documentación mínima no es una sección aparte. Vive dentro de Criterios, con lo que pide el estatuto interno.
+- No listar el organigrama ni los nombres del PDF.
+- No saturar. Del Scrum Guide Expansion Pack (enero 2026) solo entra una idea, en «Qué es»: no confundir «ya está hecho» con «ya dio el resultado que buscábamos». El resto se queda en la línea de fuentes.
+- Cada diapositiva del tema usa el título del documento, como mucho unas 10 líneas para decir en voz alta, y una sola imagen. Los subtemas se quedan en la misma sección, más cortos, con esa única imagen.
+
+## Fuentes
+
+- Regla oficial: Guía de Scrum, noviembre 2020 (scrumguides.org). Si aparece una Guía posterior, esa manda.
+- Complemento, no reemplazo: Scrum Guide Expansion Pack, enero 2026.
+- Criterios de la empresa: `src/app/documents/Estatuto de Scrum.pdf`. La Guía no impone esa lista; en pantalla va como «así lo tenemos nosotros».
+
+## Cómo está armada
+
+- Textos en `src/content/presentation.ts`. La página se arma en `src/components/presentation/`. Logos en `src/components/marks/`. Imágenes de cada diapositiva en `src/components/visuals/`.
+- Secciones: portada, los cinco puntos del tema y, al final, Fuentes. En el navbar van los cinco puntos y Fuentes. Icono y título a la izquierda. A la derecha: modo claro/oscuro y modo presentación.
+- Las fuentes no van dentro de «Si no cumple». Son su propia diapositiva.
+- El scroll es normal y la barra es fina, sin flechas. Fuera del modo presentación, solo los botones anterior/siguiente cambian de sección. En el hero no están: «Explora la presentación» lleva a la siguiente y no se muestra en modo presentación.
+- Modo presentación: pantalla completa, una sección a la vez, desde la que se está viendo. Se entra con el botón o con Ctrl+F5 (como Google Slides). Flecha derecha avanza y flecha izquierda retrocede. Escape sale.
+- Paleta del icono de Jira (`#0052CC`, `#2684FF`, texto `#172B4D`). Favicon: `src/app/icon.svg`. El SVG original está en `src/app/assets/Jira.svg`.
+- Sin librerías nuevas. Idioma de la página: español.
+- Las pruebas las realiza el usuario. No abrir el navegador ni tomar capturas salvo que se pida explícitamente.
