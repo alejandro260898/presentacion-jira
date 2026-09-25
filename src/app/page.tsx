@@ -1,6 +1,8 @@
 import { Presentation } from "@/components/presentation";
 import { readIndice } from "@/lib/presentaciones-store";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const indice = await readIndice();
   const person = indice.people.find((item) => item.id === indice.activeId) ?? indice.people[0];

@@ -87,7 +87,12 @@ export async function uploadImagen(
   const slide = person.slides.find((item) => item.id === id);
   if (!slide) return { ok: false, error: "No se encontró la diapositiva." };
 
-  const image = await replacePersonImage(personId, slide.image, `${id}-${Date.now()}.${file.extension}`, file.bytes);
+  let image: string;
+  try {
+    image = await replacePersonImage(personId, slide.image, `${id}-${Date.now()}.${file.extension}`, file.bytes);
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : "No se pudo guardar la imagen." };
+  }
   const indice = await updatePerson(personId, (current) => ({
     ...current,
     slides: current.slides.map((item) => (item.id === id ? withSlideImage(item, image) : item)),
@@ -118,7 +123,12 @@ export async function uploadHeroImage(
   const file = await readImage(formData);
   if (!file.ok) return file;
   const person = findPerson(await readIndice(), personId);
-  const image = await replacePersonImage(personId, person.hero.image, `hero-${Date.now()}.${file.extension}`, file.bytes);
+  let image: string;
+  try {
+    image = await replacePersonImage(personId, person.hero.image, `hero-${Date.now()}.${file.extension}`, file.bytes);
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : "No se pudo guardar la imagen." };
+  }
   const indice = await updatePerson(personId, (current) => ({ ...current, hero: { ...current.hero, image } }));
   return { ok: true, hero: findPerson(indice, personId).hero };
 }
