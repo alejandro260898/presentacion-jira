@@ -126,16 +126,42 @@ html.presenting .deck-section {
   display: none;
 }
 
-html.presenting .deck-section[data-current="true"] {
+html.presenting .deck-section[data-current="true"],
+html.presenting .deck-section[data-leaving="true"] {
   display: block;
   position: fixed;
   inset: 0;
-  z-index: 30;
   height: 100dvh;
   min-height: 100dvh;
   padding-top: 0;
+}
+
+html.presenting .deck-section[data-current="true"] {
+  z-index: 32;
   overflow: auto;
   animation: present-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html.presenting .deck-section[data-leaving="true"] {
+  z-index: 31;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+html.presenting[data-slide-dir="forward"] .deck-section[data-current="true"] {
+  animation: slide-in-from-right 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.presenting[data-slide-dir="forward"] .deck-section[data-leaving="true"] {
+  animation: slide-out-to-left 0.52s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+html.presenting[data-slide-dir="back"] .deck-section[data-current="true"] {
+  animation: slide-in-from-left 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+html.presenting[data-slide-dir="back"] .deck-section[data-leaving="true"] {
+  animation: slide-out-to-right 0.52s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
 html.presenting .deck-inner {
@@ -203,6 +229,26 @@ html.presenting .deck-inner {
   to   { opacity: 1; transform: scale(1); }
 }
 
+@keyframes slide-in-from-right {
+  from { opacity: 0; transform: translate3d(72px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes slide-out-to-left {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to { opacity: 0; transform: translate3d(-72px, 0, 0); }
+}
+
+@keyframes slide-in-from-left {
+  from { opacity: 0; transform: translate3d(-72px, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes slide-out-to-right {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to { opacity: 0; transform: translate3d(72px, 0, 0); }
+}
+
 /* ── Reduced motion overrides ───────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -215,7 +261,8 @@ html.presenting .deck-inner {
     animation: none;
   }
 
-  html.presenting .deck-section[data-current="true"] {
+  html.presenting .deck-section[data-current="true"],
+  html.presenting .deck-section[data-leaving="true"] {
     animation: none;
   }
 }

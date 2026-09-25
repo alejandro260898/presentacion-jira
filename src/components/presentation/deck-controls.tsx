@@ -1,4 +1,3 @@
-import type { SectionId } from "@/content/presentation";
 import { DarkToggle } from "@/components/presentation/dark-toggle";
 import { Chevron, ExitIcon } from "@/components/presentation/icons";
 
@@ -71,9 +70,11 @@ export function SectionStepButton({
 
 export function DeckStepButtons({
   active,
+  lastId,
   onStep,
 }: {
-  active: SectionId;
+  active: string;
+  lastId: string | null;
   onStep: (delta: number) => void;
 }) {
   return (
@@ -81,7 +82,7 @@ export function DeckStepButtons({
       {active !== "inicio" ? (
         <SectionStepButton direction="up" label="Anterior" placement="top" onClick={() => onStep(-1)} />
       ) : null}
-      {active !== "inicio" && active !== "fuentes" ? (
+      {active !== "inicio" && lastId && active !== lastId ? (
         <SectionStepButton direction="down" label="Siguiente" placement="bottom" onClick={() => onStep(1)} />
       ) : null}
     </>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { slides, type SectionId } from "@/content/presentation";
 
 function deckSections() {
   return Array.from(document.querySelectorAll<HTMLElement>("[data-deck]"));
@@ -14,18 +13,39 @@ function visibleArea(element: HTMLElement) {
   return Math.max(0, bottom - top);
 }
 
-export function useDeck() {
-  const [active, setActive] = useState<SectionId>("inicio");
+export function useDeck(slideIds: readonly string[]) {
+  const [active, setActive] = useState("inicio");
   const [dark, setDark] = useState(false);
   const [presenting, setPresenting] = useState(false);
-  const activeRef = useRef<SectionId>("inicio");
+  const activeRef = useRef("inicio");
   const presentingRef = useRef(false);
   const scrollingRef = useRef(false);
+  const leaveTimer = useRef<number | null>(null);
+  const [leavingId, setLeavingId] = useState<string | null>(null);
+  const orderRef = useRef<string[]>(["inicio"]);
 
-  activeRef.current = active;
-  presentingRef.current = presenting;
+  useEffect(() => {
+    activeRef.current = active;
+    presentingRef.current = presenting;
+    orderRef.current = ["inicio", ...slideIds];
+  }, [active, presenting, slideIds]);
 
-  const goTo = useCallback((id: SectionId) => {
+  const goTo = useCallback((id: string) => {
+    const current = activeRef.current;
+    if (presentingRef.current && id !== current) {
+      const order = orderRef.current;
+      const from = order.indexOf(current);
+      const to = order.indexOf(id);
+      if (from >= 0 && to >= 0) {
+        document.documentElement.dataset.slideDir = to > from ? "forward" : "back";
+        setLeavingId(current);
+        if (leaveTimer.current) window.clearTimeout(leaveTimer.current);
+        leaveTimer.current = window.setTimeout(() => {
+          setLeavingId(null);
+          delete document.documentElement.dataset.slideDir;
+        }, 560);
+      }
+    }
     setActive(id);
     activeRef.current = id;
     if (presentingRef.current) return;
@@ -42,9 +62,11 @@ export function useDeck() {
 
   const step = useCallback(
     (delta: number) => {
-      const index = slides.findIndex((slide) => slide.id === activeRef.current);
-      const next = slides[index + delta];
-      if (next) goTo(next.id);
+      const order = orderRef.current;
+      const index = order.indexOf(activeRef.current);
+      if (index < 0) return;
+      const next = order[index + delta];
+      if (next) goTo(next);
     },
     [goTo],
   );
@@ -81,7 +103,9 @@ export function useDeck() {
   }, []);
 
   useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
+    const frame = requestAnimationFrame(() => {
+      setDark(document.documentElement.classList.contains("dark"));
+    });
 
     const header = document.querySelector("header");
     const setNavHeight = () => {
@@ -103,7 +127,7 @@ export function useDeck() {
           best = section;
         }
       }
-      if (best) setActive(best.id as SectionId);
+      if (best?.id) setActive(best.id);
     };
 
     const onKey = (event: KeyboardEvent) => {
@@ -128,6 +152,8 @@ export function useDeck() {
       setPresenting(on);
       document.documentElement.classList.toggle("presenting", on);
       if (!on) {
+        setLeavingId(null);
+        delete document.documentElement.dataset.slideDir;
         const id = activeRef.current;
         requestAnimationFrame(() =>
           document.getElementById(id)?.scrollIntoView({ behavior: "auto", block: "start" }),
@@ -142,6 +168,7 @@ export function useDeck() {
     document.addEventListener("fullscreenchange", onFullscreen);
 
     return () => {
+      cancelAnimationFrame(frame);
       resizeObserver.disconnect();
       window.removeEventListener("scroll", updateActive);
       window.removeEventListener("resize", setNavHeight);
@@ -150,5 +177,5 @@ export function useDeck() {
     };
   }, [step, togglePresentation]);
 
-  return { active, dark, presenting, goTo, step, setDarkMode, togglePresentation };
+  return { active, dark, presenting, leavingId, goTo, step, setDarkMode, togglePresentation };
 }

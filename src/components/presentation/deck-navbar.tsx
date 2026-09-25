@@ -1,23 +1,26 @@
-import type { SectionId } from "@/content/presentation";
-import { nav } from "@/content/presentation";
+import type { ReactNode } from "react";
 import { CngMark } from "@/components/marks/cng-mark";
 import { DarkToggle } from "@/components/presentation/dark-toggle";
 import { PresentIcon } from "@/components/presentation/icons";
 
 export function DeckNavbar({
+  items,
   active,
   dark,
   hidden,
   onNavigate,
   onToggleTheme,
   onPresent,
+  presenter,
 }: {
-  active: SectionId;
+  items: readonly { id: string; label: string; pending?: boolean }[];
+  active: string;
   dark: boolean;
   hidden: boolean;
-  onNavigate: (id: SectionId) => void;
+  onNavigate: (id: string) => void;
   onToggleTheme: () => void;
   onPresent: () => void;
+  presenter: ReactNode;
 }) {
   return (
     <header
@@ -43,14 +46,14 @@ export function DeckNavbar({
           className="order-last basis-full xl:absolute xl:left-1/2 xl:top-1/2 xl:order-none xl:basis-auto xl:-translate-x-1/2 xl:-translate-y-1/2"
         >
           <ul className="flex flex-wrap justify-center gap-1">
-            {nav.map((item) => {
+            {items.map((item) => {
               const isActive = active === item.id;
               return (
                 <li key={item.id}>
                   <a
                     href={`#${item.id}`}
                     aria-current={isActive ? "true" : undefined}
-                    className={`inline-flex text-center text-xs leading-tight transition-all duration-200 ${
+                    className={`inline-flex items-center text-center text-xs leading-tight transition-all duration-200 ${
                       isActive
                         ? "rounded-t-md rounded-b-none border-b-[3px] border-[#0052CC] bg-[#0052CC]/[0.12] px-3 py-2 font-semibold text-[#0052CC]"
                         : "rounded-md px-2.5 py-1.5 text-[var(--ink)] hover:bg-[var(--hover)] hover:px-3.5 hover:py-2"
@@ -61,6 +64,12 @@ export function DeckNavbar({
                     }}
                   >
                     {item.label}
+                    {item.pending ? (
+                      <span
+                        aria-label="Le falta contenido"
+                        className="ml-1.5 h-2 w-2 shrink-0 rounded-full bg-red-500"
+                      />
+                    ) : null}
                   </a>
                 </li>
               );
@@ -77,6 +86,7 @@ export function DeckNavbar({
           >
             Ver presentación <PresentIcon />
           </button>
+          {presenter}
         </div>
       </div>
     </header>

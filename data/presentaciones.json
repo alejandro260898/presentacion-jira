@@ -1,0 +1,98 @@
+{
+  "activeId": "francisco-alejandro-galvan-ontiveros",
+  "people": [
+    {
+      "id": "francisco-alejandro-galvan-ontiveros",
+      "name": "Francisco Alejandro Galván Ontiverós",
+      "hero": {
+        "title": "Definition of Done y documentación mínima",
+        "description": "Ponernos de acuerdo en cuándo algo está de verdad terminado, para entregar valor con calidad, claridad y sin sorpresas.",
+        "image": null,
+        "highlights": [
+          {
+            "icon": "people",
+            "text": "Equipos más alineados"
+          },
+          {
+            "icon": "check",
+            "text": "Menos retrabajo"
+          },
+          {
+            "icon": "chart",
+            "text": "Mayor calidad"
+          }
+        ]
+      },
+      "slides": [
+        {
+          "id": "que-es",
+          "navLabel": "Qué es la",
+          "title": "Qué es la Definition of Done",
+          "description": "Es la descripción de cuándo un incremento cumple la calidad del producto. Si un elemento la cumple, ya nace un incremento que se puede entregar. Si no la cumple, todavía no está terminado. No confundas \"ya está hecho\" con \"ya dio el resultado que buscábamos\".",
+          "image": "/diapositivas/que-es-1790364583718.png",
+          "pending": false
+        },
+        {
+          "id": "diferencias",
+          "navLabel": "Diferencias",
+          "title": "Diferencia entre criterios de aceptación, Definition of Done y Definition of Ready",
+          "description": "Criterios de aceptación. Son de un solo elemento. Ejemplo: el usuario puede filtrar por fecha.\nDefinition of Done. Es la misma calidad para todos los incrementos. Ejemplo: probado, revisado e integrado.\nDefinition of Ready. Acuerdo opcional para empezar. No es oficial y no debe ser una compuerta.",
+          "image": null
+        },
+        {
+          "id": "criterios",
+          "navLabel": "Ejemplos",
+          "title": "Ejemplos de criterios para la DoD",
+          "description": "La guía no trae una lista. Esta es la nuestra.\nRequerimientos cumplidos, pruebas hechas y evidencia de que funciona.\nBuenas prácticas de código y visto bueno del Product Owner.\nDocumentación mínima: nota técnica, captura o video, descripción del cambio y changelog.\nEl ticket de Jira se arma con esta lista, no al revés.",
+          "image": null
+        },
+        {
+          "id": "quien",
+          "navLabel": "Quién define",
+          "title": "Quién define y mantiene la DoD",
+          "description": "Si la organización ya tiene una, esa es el mínimo para todos.\nSi no, la crea el equipo Scrum.\nQuienes construyen se comprometen a cumplirla.\nSe revisa en la retrospectiva.\nEn nuestro estatuto ya está consensuada y se revisa cada cierto tiempo.",
+          "image": null
+        },
+        {
+          "id": "incumple",
+          "navLabel": "Si no cumple",
+          "title": "Qué hacer con trabajo que no cumple la DoD",
+          "description": "No se presenta como terminado en la revisión del sprint.\nNo se publica.\nVuelve al Product Backlog para retomarlo después.\nNo forma parte de lo entregado.",
+          "image": null
+        },
+        {
+          "id": "fuentes",
+          "navLabel": "Fuentes",
+          "title": "Fuentes",
+          "description": "Guía de Scrum, noviembre 2020\nScrum Guide Expansion Pack, enero 2026\nEstatuto de Scrum (Documento de CNG)\n\nConsultado el 22 de septiembre de 2026.",
+          "image": null,
+          "pending": false
+        }
+      ]
+    },
+    {
+      "id": "jorge-nitales",
+      "name": "Jorge Nitales",
+      "hero": {
+        "title": "Nueva presentación",
+        "description": "",
+        "image": null,
+        "highlights": [
+          {
+            "icon": "people",
+            "text": "Equipos más alineados"
+          },
+          {
+            "icon": "check",
+            "text": "Menos retrabajo"
+          },
+          {
+            "icon": "chart",
+            "text": "Mayor calidad"
+          }
+        ]
+      },
+      "slides": []
+    }
+  ]
+}

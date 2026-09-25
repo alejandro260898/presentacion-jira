@@ -23,11 +23,14 @@ Landing de una sola página para exponer en 15 minutos «Definition of Done y do
 
 ## Cómo está armada
 
-- Textos en `src/content/presentation.ts`. La página se arma en `src/components/presentation/`. Logos en `src/components/marks/`. Imágenes de cada diapositiva en `src/components/visuals/`.
+- Todo el contenido vive en `data/presentaciones.json`. Cada persona tiene su carpeta de imágenes en `public/presentaciones/`. Al cambiar una imagen se borra la anterior. El máximo es 10 diapositivas, contando la portada. En la barra, a la derecha, las iniciales de la persona activa abren el cambio o el alta. La primera es Francisco Alejandro Galván Ontiverós.
+- El hero se edita fuera del modo presentación: título, descripción, imagen y las tres tarjetas. «Ver presentación» no se edita. No hay botón «Ir a ejemplos». Las imágenes no pueden pasar de 5 MB.
+- La página se arma en `src/components/presentation/`. Logos en `src/components/marks/`. Si una diapositiva aún no tiene imagen propia, usa el dibujo de `src/components/visuals/`.
+- Fuera del modo presentación, un clic en el título, la descripción o la imagen los edita. El botón «Nueva sección», abajo a la derecha, inserta una diapositiva después de la que se está viendo. El clic derecho en una diapositiva o en una persona abre Eliminar y un modal de confirmación. El hero no se elimina. Si solo queda una persona, no se puede borrar. Mientras le falte título, descripción o imagen, en la barra se llama «Nueva» y lleva un círculo rojo.
 - Secciones: portada, los cinco puntos del tema y, al final, Fuentes. En el navbar van los cinco puntos y Fuentes. Icono y título a la izquierda. A la derecha: modo claro/oscuro y modo presentación.
 - Las fuentes no van dentro de «Si no cumple». Son su propia diapositiva.
 - El scroll es normal y la barra es fina, sin flechas. Fuera del modo presentación, solo los botones anterior/siguiente cambian de sección. En el hero no están: «Explora la presentación» lleva a la siguiente y no se muestra en modo presentación.
-- Modo presentación: pantalla completa, una sección a la vez, desde la que se está viendo. Se entra con el botón o con Ctrl+F5 (como Google Slides). Flecha derecha avanza y flecha izquierda retrocede. Escape sale.
+- Modo presentación: pantalla completa, una sección a la vez, desde la que se está viendo. Se entra con el botón o con Ctrl+F5 (como Google Slides). Flecha derecha avanza y flecha izquierda retrocede, con un deslizamiento en esa dirección. Escape sale.
 - Paleta del icono de Jira (`#0052CC`, `#2684FF`, texto `#172B4D`). Favicon: `src/app/icon.svg`. El SVG original está en `src/app/assets/Jira.svg`.
 - Sin librerías nuevas. Idioma de la página: español.
 - Las pruebas las realiza el usuario. No abrir el navegador ni tomar capturas salvo que se pida explícitamente.
