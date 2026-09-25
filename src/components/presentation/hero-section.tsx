@@ -138,7 +138,15 @@ export function HeroSection({
               {presenting ? (
                 hero.title
               ) : (
-                <button type="button" className="text-left" onMouseDown={(event) => { event.preventDefault(); begin("title"); }}>
+                <button
+                  type="button"
+                  className="text-left"
+                  onMouseDown={(event) => {
+                    if (event.button !== 0) return;
+                    event.preventDefault();
+                    begin("title");
+                  }}
+                >
                   {hero.title}
                 </button>
               )}
@@ -159,15 +167,23 @@ export function HeroSection({
               className="mt-5 w-full max-w-xl resize-y rounded-xl border border-[#2684FF] bg-[#041028] px-3 py-2 text-lg leading-relaxed text-white outline-none"
             />
           ) : (
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/70">
+            <div className="mt-5 max-w-xl text-lg leading-relaxed text-white/70">
               {presenting ? (
                 hero.description
               ) : (
-                <button type="button" className="text-left" onMouseDown={(event) => { event.preventDefault(); begin("description"); }}>
+                <button
+                  type="button"
+                  className="text-left"
+                  onMouseDown={(event) => {
+                    if (event.button !== 0) return;
+                    event.preventDefault();
+                    begin("description");
+                  }}
+                >
                   {hero.description || "Agrega una descripción"}
                 </button>
               )}
-            </p>
+            </div>
           )}
 
           {!presenting ? (
@@ -237,7 +253,15 @@ export function HeroSection({
                     {presenting ? (
                       item.text
                     ) : (
-                      <button type="button" className="text-left" onMouseDown={(event) => { event.preventDefault(); begin(index); }}>
+                      <button
+                        type="button"
+                        className="text-left"
+                        onMouseDown={(event) => {
+                          if (event.button !== 0) return;
+                          event.preventDefault();
+                          begin(index);
+                        }}
+                      >
                         {item.text || "Texto"}
                       </button>
                     )}
@@ -323,7 +347,7 @@ export function HeroSection({
             className="group absolute inset-x-0 bottom-7 flex flex-col items-center gap-2 text-white/35 transition-colors duration-300 hover:text-white"
           >
             <MouseIcon />
-            <p className="text-[11px] tracking-wide">Explora la presentación</p>
+            <span className="text-[11px] tracking-wide">Explora la presentación</span>
             <svg viewBox="0 0 24 24" className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" aria-hidden="true">
               <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

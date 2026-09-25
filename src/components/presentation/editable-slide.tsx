@@ -139,6 +139,7 @@ export function EditableSlide({
                 type="button"
                 className="text-left"
                 onMouseDown={(event) => {
+                  if (event.button !== 0) return;
                   event.preventDefault();
                   selectField("title");
                 }}
@@ -174,6 +175,7 @@ export function EditableSlide({
                 type="button"
                 className="text-left"
                 onMouseDown={(event) => {
+                  if (event.button !== 0) return;
                   event.preventDefault();
                   selectField("description");
                 }}
@@ -203,6 +205,7 @@ export function EditableSlide({
             tabIndex={0}
             aria-label={slide.image || builtIn ? "Cambiar imagen" : "Agregar imagen"}
             onMouseDown={(event) => {
+              if (event.button !== 0) return;
               event.preventDefault();
               selectField("image");
             }}

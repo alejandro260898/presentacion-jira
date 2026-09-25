@@ -73,11 +73,15 @@ export function ContextMenu({
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const openedAt = performance.now();
     const onPointerDown = (event: Event) => {
       if (rootRef.current?.contains(event.target as Node)) return;
       onClose();
     };
-    const onScroll = () => onClose();
+    const onScroll = () => {
+      if (performance.now() - openedAt < 400) return;
+      onClose();
+    };
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };

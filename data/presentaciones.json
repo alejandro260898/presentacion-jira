@@ -25,6 +25,14 @@
       },
       "slides": [
         {
+          "id": "cffcf093-9b9d-48f2-8d48-0a0bad9f6b57",
+          "navLabel": "Nueva",
+          "title": "Nueva diapositiva",
+          "description": "",
+          "image": null,
+          "pending": true
+        },
+        {
           "id": "que-es",
           "navLabel": "Qué es la",
           "title": "Qué es la Definition of Done",
