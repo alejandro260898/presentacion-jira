@@ -77,15 +77,16 @@ export function ContextMenu({
       if (rootRef.current?.contains(event.target as Node)) return;
       onClose();
     };
+    const onScroll = () => onClose();
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("scroll", onPointerDown, true);
+    document.addEventListener("scroll", onScroll, true);
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("scroll", onPointerDown, true);
+      document.removeEventListener("scroll", onScroll, true);
       document.removeEventListener("keydown", onKey);
     };
   }, [onClose]);
