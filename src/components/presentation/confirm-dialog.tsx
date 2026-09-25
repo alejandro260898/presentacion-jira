@@ -73,7 +73,7 @@ export function ContextMenu({
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onPointerDown = (event: PointerEvent) => {
+    const onPointerDown = (event: Event) => {
       if (rootRef.current?.contains(event.target as Node)) return;
       onClose();
     };
