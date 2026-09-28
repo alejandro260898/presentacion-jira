@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { updateHero, uploadHeroImage } from "@/app/actions/diapositivas";
+import { setHeroImagenSubida, updateHero, uploadHeroImage } from "@/app/actions/diapositivas";
+import { uploadToBlob } from "@/lib/subir-imagen";
 import { HERO_ICONS, type HeroContent, type HeroIconId } from "@/lib/hero";
 import { IMAGE_TOO_LARGE, MAX_IMAGE_BYTES } from "@/lib/diapositiva";
 import { JiraMark } from "@/components/marks/jira-mark";
@@ -11,6 +12,7 @@ import { MouseIcon, PresentIcon } from "@/components/presentation/icons";
 export function HeroSection({
   hero,
   personId,
+  blobUploads,
   active,
   leaving,
   presenting,
@@ -20,6 +22,7 @@ export function HeroSection({
 }: {
   hero: HeroContent;
   personId: string;
+  blobUploads: boolean;
   active: string;
   leaving: boolean;
   presenting: boolean;
@@ -87,15 +90,28 @@ export function HeroSection({
       setImageError(IMAGE_TOO_LARGE);
       return;
     }
-    const formData = new FormData();
-    formData.set("personId", personId);
-    formData.set("image", file);
-    const result = await uploadHeroImage(formData);
+    const result = blobUploads ? await uploadHeroToBlob(file) : await uploadHeroLocally(file);
     if (!result.ok) {
       setImageError(result.error);
       return;
     }
     onChange(result.hero);
+  }
+
+  async function uploadHeroToBlob(file: File) {
+    try {
+      const url = await uploadToBlob(personId, "hero", file);
+      return await setHeroImagenSubida(personId, url);
+    } catch {
+      return { ok: false as const, error: "No se pudo subir la imagen. Intenta de nuevo." };
+    }
+  }
+
+  function uploadHeroLocally(file: File) {
+    const formData = new FormData();
+    formData.set("personId", personId);
+    formData.set("image", file);
+    return uploadHeroImage(formData);
   }
 
   function persist(next: HeroContent) {

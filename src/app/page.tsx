@@ -1,5 +1,5 @@
 import { Presentation } from "@/components/presentation";
-import { readIndice } from "@/lib/presentaciones-store";
+import { readIndice, usesBlobStorage } from "@/lib/presentaciones-store";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +13,7 @@ export default async function Home() {
       initialPeople={indice.people.map((item) => ({ id: item.id, name: item.name }))}
       initialSlides={person.slides}
       initialHero={person.hero}
+      blobUploads={usesBlobStorage()}
     />
   );
 }

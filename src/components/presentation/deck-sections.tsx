@@ -4,6 +4,7 @@ import { EditableSlide } from "@/components/presentation/editable-slide";
 export function DeckSections({
   slides,
   personId,
+  blobUploads,
   active,
   leavingId,
   presenting,
@@ -13,6 +14,7 @@ export function DeckSections({
 }: {
   slides: Diapositiva[];
   personId: string;
+  blobUploads: boolean;
   active: string;
   leavingId: string | null;
   presenting: boolean;
@@ -37,7 +39,7 @@ export function DeckSections({
             }
       }
     >
-      <EditableSlide slide={slide} personId={personId} presenting={presenting} onSave={onSave} onUploaded={onUploaded} />
+      <EditableSlide slide={slide} personId={personId} blobUploads={blobUploads} presenting={presenting} onSave={onSave} onUploaded={onUploaded} />
     </section>
   ));
 }

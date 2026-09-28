@@ -17,11 +17,13 @@ export function Presentation({
   initialPeople,
   initialSlides,
   initialHero,
+  blobUploads,
 }: {
   initialPersonId: string;
   initialPeople: readonly { id: string; name: string }[];
   initialSlides: Diapositiva[];
   initialHero: HeroContent;
+  blobUploads: boolean;
 }) {
   const [personId, setPersonId] = useState(initialPersonId);
   const [people, setPeople] = useState(initialPeople);
@@ -145,6 +147,7 @@ export function Presentation({
         <HeroSection
           hero={hero}
           personId={personId}
+          blobUploads={blobUploads}
           active={active}
           leaving={leavingId === "inicio"}
           presenting={presenting}
@@ -155,6 +158,7 @@ export function Presentation({
         <DeckSections
           slides={slides}
           personId={personId}
+          blobUploads={blobUploads}
           active={active}
           leavingId={leavingId}
           presenting={presenting}

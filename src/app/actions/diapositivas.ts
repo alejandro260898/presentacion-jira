@@ -18,6 +18,7 @@ import {
   MAX_CONTENT_SLIDES,
   MAX_PEOPLE,
   blankPerson,
+  isBlobImageFor,
   readIndice,
   removePublicImage,
   replacePersonImage,
@@ -98,6 +99,34 @@ export async function uploadImagen(
     slides: current.slides.map((item) => (item.id === id ? withSlideImage(item, image) : item)),
   }));
   return { ok: true, slides: findPerson(indice, personId).slides };
+}
+
+export async function setImagenSubida(
+  personId: string,
+  id: string,
+  url: string,
+): Promise<{ ok: true; slides: Diapositiva[] } | { ok: false; error: string }> {
+  if (!isSafeSlideId(id) || !isBlobImageFor(personId, url)) return { ok: false, error: "No se pudo guardar la imagen." };
+  const person = findPerson(await readIndice(), personId);
+  const slide = person.slides.find((item) => item.id === id);
+  if (!slide) return { ok: false, error: "No se encontró la diapositiva." };
+  const indice = await updatePerson(personId, (current) => ({
+    ...current,
+    slides: current.slides.map((item) => (item.id === id ? withSlideImage(item, url) : item)),
+  }));
+  await removePublicImage(slide.image);
+  return { ok: true, slides: findPerson(indice, personId).slides };
+}
+
+export async function setHeroImagenSubida(
+  personId: string,
+  url: string,
+): Promise<{ ok: true; hero: HeroContent } | { ok: false; error: string }> {
+  if (!isBlobImageFor(personId, url)) return { ok: false, error: "No se pudo guardar la imagen." };
+  const previous = findPerson(await readIndice(), personId).hero.image;
+  const indice = await updatePerson(personId, (current) => ({ ...current, hero: { ...current.hero, image: url } }));
+  await removePublicImage(previous);
+  return { ok: true, hero: findPerson(indice, personId).hero };
 }
 
 export async function updateHero(personId: string, hero: HeroContent): Promise<HeroContent> {

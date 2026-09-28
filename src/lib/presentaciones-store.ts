@@ -1,5 +1,6 @@
 import { mkdir, readFile, unlink, writeFile } from "fs/promises";
 import path from "path";
+import { del, get, put } from "@vercel/blob";
 import seed from "../../data/presentaciones.json";
 import { defaultHero, type HeroContent } from "@/lib/hero";
 import type { Diapositiva } from "@/lib/diapositiva";
@@ -10,7 +11,13 @@ export const MAX_CONTENT_SLIDES = 9;
 const dataPath = path.join(process.cwd(), "data", "presentaciones.json");
 const publicRoot = path.join(process.cwd(), "public");
 const onVercel = process.env.VERCEL === "1";
+const blobEnabled = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+const indiceBlobPath = "data/presentaciones.json";
 let liveOnVercel: Indice | null = null;
+
+export function usesBlobStorage() {
+  return blobEnabled;
+}
 
 export type Presentador = {
   id: string;
@@ -30,6 +37,13 @@ const firstPerson = {
 };
 
 export async function readIndice(): Promise<Indice> {
+  if (blobEnabled) {
+    const stored = await readBlobIndice();
+    if (stored && stored.people.length > 0) return stored;
+    const seeded = normalizeIndice(seed);
+    await writeIndice(seeded);
+    return seeded;
+  }
   if (onVercel && liveOnVercel) return copyIndice(liveOnVercel);
   try {
     const raw = await readFile(dataPath, "utf8");
@@ -50,6 +64,16 @@ export async function readIndice(): Promise<Indice> {
 
 export async function writeIndice(indice: Indice) {
   const copy = copyIndice(indice);
+  if (blobEnabled) {
+    await put(indiceBlobPath, JSON.stringify(copy, null, 2), {
+      access: "public",
+      allowOverwrite: true,
+      addRandomSuffix: false,
+      contentType: "application/json",
+      cacheControlMaxAge: 60,
+    });
+    return;
+  }
   if (onVercel) liveOnVercel = copy;
   try {
     await mkdir(path.dirname(dataPath), { recursive: true });
@@ -78,7 +102,7 @@ export function personImagesDir(personId: string) {
 
 export async function replacePersonImage(personId: string, previous: string | null, filename: string, bytes: Buffer) {
   if (onVercel) {
-    throw new Error("En el sitio publicado no se pueden guardar imágenes nuevas. Hazlo en local y vuelve a desplegar.");
+    throw new Error("Para guardar imágenes en el sitio publicado, conecta un Blob store al proyecto en Vercel.");
   }
   const dir = personImagesDir(personId);
   await mkdir(dir, { recursive: true });
@@ -87,7 +111,25 @@ export async function replacePersonImage(personId: string, previous: string | nu
   return `/presentaciones/${personId}/${filename}`;
 }
 
+export function isBlobImageFor(personId: string, url: string) {
+  try {
+    const parsed = new URL(url);
+    return (
+      parsed.protocol === "https:" &&
+      parsed.hostname.endsWith(".public.blob.vercel-storage.com") &&
+      parsed.pathname.startsWith(`/presentaciones/${personId}/`)
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function removePublicImage(image: string | null) {
+  if (image?.startsWith("https://")) {
+    if (blobEnabled && image.includes(".public.blob.vercel-storage.com/")) await del(image).catch(() => undefined);
+    return;
+  }
+  if (onVercel) return;
   if (!image?.startsWith("/presentaciones/") && !image?.startsWith("/diapositivas/")) return;
   const target = path.resolve(publicRoot, image.replace(/^\//, ""));
   const relative = path.relative(publicRoot, target);
@@ -118,6 +160,16 @@ export function blankPerson(id: string, name: string): Presentador {
 }
 
 export { MAX_PEOPLE };
+
+async function readBlobIndice() {
+  try {
+    const result = await get(indiceBlobPath, { access: "public", useCache: false });
+    if (!result || result.statusCode !== 200) return null;
+    return normalizeIndice(JSON.parse(await new Response(result.stream).text()));
+  } catch {
+    return null;
+  }
+}
 
 function remember(indice: Indice) {
   const copy = copyIndice(indice);

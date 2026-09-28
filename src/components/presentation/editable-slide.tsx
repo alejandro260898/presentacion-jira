@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { uploadImagen } from "@/app/actions/diapositivas";
+import { setImagenSubida, uploadImagen } from "@/app/actions/diapositivas";
 import { IMAGE_TOO_LARGE, MAX_IMAGE_BYTES, type Diapositiva } from "@/lib/diapositiva";
+import { uploadToBlob } from "@/lib/subir-imagen";
 import { CriteriaVisual } from "@/components/visuals/criteria-visual";
 import { DifferencesVisual } from "@/components/visuals/differences-visual";
 import { IncompleteVisual } from "@/components/visuals/incomplete-visual";
@@ -22,12 +23,14 @@ type Field = "title" | "description" | "image";
 export function EditableSlide({
   slide,
   personId,
+  blobUploads,
   presenting,
   onSave,
   onUploaded,
 }: {
   slide: Diapositiva;
   personId: string;
+  blobUploads: boolean;
   presenting: boolean;
   onSave: (id: string, patch: { title?: string; description?: string }) => void;
   onUploaded: (slides: Diapositiva[]) => void;
@@ -97,16 +100,29 @@ export function EditableSlide({
       setImageError(IMAGE_TOO_LARGE);
       return;
     }
-    const formData = new FormData();
-    formData.set("personId", personId);
-    formData.set("id", slide.id);
-    formData.set("image", file);
-    const result = await uploadImagen(formData);
+    const result = blobUploads ? await uploadSlideToBlob(file) : await uploadSlideLocally(file);
     if (!result.ok) {
       setImageError(result.error);
       return;
     }
     onUploaded(result.slides);
+  }
+
+  async function uploadSlideToBlob(file: File) {
+    try {
+      const url = await uploadToBlob(personId, slide.id, file);
+      return await setImagenSubida(personId, slide.id, url);
+    } catch {
+      return { ok: false as const, error: "No se pudo subir la imagen. Intenta de nuevo." };
+    }
+  }
+
+  function uploadSlideLocally(file: File) {
+    const formData = new FormData();
+    formData.set("personId", personId);
+    formData.set("id", slide.id);
+    formData.set("image", file);
+    return uploadImagen(formData);
   }
 
   const builtIn = slide.image ? null : (builtInFigures[slide.id] ?? null);

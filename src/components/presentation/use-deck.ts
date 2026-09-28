@@ -40,10 +40,7 @@ export function useDeck(slideIds: readonly string[]) {
         document.documentElement.dataset.slideDir = to > from ? "forward" : "back";
         setLeavingId(current);
         if (leaveTimer.current) window.clearTimeout(leaveTimer.current);
-        leaveTimer.current = window.setTimeout(() => {
-          setLeavingId(null);
-          delete document.documentElement.dataset.slideDir;
-        }, 560);
+        leaveTimer.current = window.setTimeout(() => setLeavingId(null), 560);
       }
     }
     setActive(id);
@@ -91,6 +88,7 @@ export function useDeck(slideIds: readonly string[]) {
         await document.exitFullscreen();
         return;
       }
+      delete document.documentElement.dataset.slideDir;
       document.documentElement.classList.add("presenting");
       presentingRef.current = true;
       setPresenting(true);
