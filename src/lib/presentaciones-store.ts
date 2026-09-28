@@ -12,6 +12,7 @@ const dataPath = path.join(process.cwd(), "data", "presentaciones.json");
 const publicRoot = path.join(process.cwd(), "public");
 const onVercel = process.env.VERCEL === "1";
 const blobEnabled = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+const dataToken = process.env.DATOS_READ_WRITE_TOKEN;
 const indiceBlobPath = "data/presentaciones.json";
 let liveOnVercel: Indice | null = null;
 
@@ -37,7 +38,7 @@ const firstPerson = {
 };
 
 export async function readIndice(): Promise<Indice> {
-  if (blobEnabled) {
+  if (dataToken) {
     const stored = await readBlobIndice();
     if (stored && stored.people.length > 0) return stored;
     const seeded = normalizeIndice(seed);
@@ -64,13 +65,13 @@ export async function readIndice(): Promise<Indice> {
 
 export async function writeIndice(indice: Indice) {
   const copy = copyIndice(indice);
-  if (blobEnabled) {
+  if (dataToken) {
     await put(indiceBlobPath, JSON.stringify(copy, null, 2), {
-      access: "public",
+      access: "private",
       allowOverwrite: true,
       addRandomSuffix: false,
       contentType: "application/json",
-      cacheControlMaxAge: 60,
+      token: dataToken,
     });
     return;
   }
@@ -162,13 +163,10 @@ export function blankPerson(id: string, name: string): Presentador {
 export { MAX_PEOPLE };
 
 async function readBlobIndice() {
-  try {
-    const result = await get(indiceBlobPath, { access: "public", useCache: false });
-    if (!result || result.statusCode !== 200) return null;
-    return normalizeIndice(JSON.parse(await new Response(result.stream).text()));
-  } catch {
-    return null;
-  }
+  const result = await get(indiceBlobPath, { access: "private", useCache: false, token: dataToken });
+  if (!result) return null;
+  if (result.statusCode !== 200) throw new Error("No se pudo leer la presentación guardada.");
+  return normalizeIndice(JSON.parse(await new Response(result.stream).text()));
 }
 
 function remember(indice: Indice) {
