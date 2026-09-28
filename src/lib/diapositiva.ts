@@ -23,8 +23,8 @@ export type Diapositiva = {
   pending?: boolean;
 };
 
-export function slideStillMissing(slide: Pick<Diapositiva, "title" | "description" | "image">) {
-  return slide.title.trim() === NEW_SLIDE_TITLE || !slide.description.trim() || !slide.image;
+export function slideIsEmpty(slide: Pick<Diapositiva, "title" | "description" | "image">) {
+  return slide.title.trim() === NEW_SLIDE_TITLE && !slide.description.trim() && !slide.image;
 }
 
 export function withSlideText(
@@ -34,7 +34,7 @@ export function withSlideText(
   const title = patch.title === undefined ? slide.title : patch.title.trim() || slide.title;
   const description = patch.description === undefined ? slide.description : patch.description;
   const next = { ...slide, title, description };
-  const pending = slide.pending ? slideStillMissing(next) : false;
+  const pending = slide.pending ? slideIsEmpty(next) : false;
   return {
     ...next,
     pending,
@@ -44,7 +44,7 @@ export function withSlideText(
 
 export function withSlideImage(slide: Diapositiva, image: string): Diapositiva {
   const next = { ...slide, image };
-  const pending = slide.pending ? slideStillMissing(next) : false;
+  const pending = slide.pending ? slideIsEmpty(next) : false;
   return {
     ...next,
     pending,
