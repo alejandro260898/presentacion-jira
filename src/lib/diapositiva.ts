@@ -38,11 +38,7 @@ export function withSlideText(
   return {
     ...next,
     pending,
-    navLabel: pending
-      ? NEW_SLIDE_LABEL
-      : slide.pending || patch.title !== undefined
-        ? navLabelFromTitle(title)
-        : slide.navLabel,
+    navLabel: slide.pending || patch.title !== undefined ? slideNavLabel(title) : slide.navLabel,
   };
 }
 
@@ -52,8 +48,12 @@ export function withSlideImage(slide: Diapositiva, image: string): Diapositiva {
   return {
     ...next,
     pending,
-    navLabel: pending ? NEW_SLIDE_LABEL : slide.pending ? navLabelFromTitle(next.title) : slide.navLabel,
+    navLabel: slide.pending ? slideNavLabel(next.title) : slide.navLabel,
   };
+}
+
+export function slideNavLabel(title: string) {
+  return title.trim() === NEW_SLIDE_TITLE ? NEW_SLIDE_LABEL : navLabelFromTitle(title);
 }
 
 export function navLabelFromTitle(title: string) {

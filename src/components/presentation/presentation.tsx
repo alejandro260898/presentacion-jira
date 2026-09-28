@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { HeroContent } from "@/lib/hero";
 import { addDiapositiva, addPresentador, deleteDiapositiva, deletePresentador, selectPresentador, updateDiapositiva } from "@/app/actions/diapositivas";
-import { withSlideText, type Diapositiva } from "@/lib/diapositiva";
+import { slideNavLabel, withSlideText, type Diapositiva } from "@/lib/diapositiva";
 import { DeckNavbar } from "@/components/presentation/deck-navbar";
 import { DeckSections } from "@/components/presentation/deck-sections";
 import { DeckStepButtons, PresentingBar } from "@/components/presentation/deck-controls";
@@ -94,7 +94,7 @@ export function Presentation({
       <DeckNavbar
         items={slides.map((slide) => ({
           id: slide.id,
-          label: slide.pending ? "Nueva" : slide.navLabel,
+          label: slide.pending ? slideNavLabel(slide.title) : slide.navLabel,
           pending: slide.pending,
         }))}
         active={active}
